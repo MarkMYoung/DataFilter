@@ -98,7 +98,7 @@ DataFilter.BooleanBinaryComparator['!~'] = function antiregexp( each, other )
 * 10. 'op' is a string (from BooleanBinaryComparator) to allow for a comparison 
 *		other than equality, including (serialized) regular expressions.
 * 11. 'or' is an object of clauses.  Provided to truncate deep conditions.
-* 12. 'subClause' is is array or object.  This is a sub-filter on nested data.  
+* 12. 'subClause' is an array or object.  This is a sub-filter on nested data.  
 *		This is invaluable when the real filtering needs to be done deeper 
 *		than the root element without affecting ancestor filtering.
 * 13. The query-by-example 'this' object is expected to be an anonymous/Object object.
@@ -153,8 +153,8 @@ DataFilter.jQueryWhereClauseDataFilter = function( response_data, content_type )
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
 DataFilter.resultsWhere = function( each, n, every )
 {
-	//DataFilter.resultsWhere._callDepth = DataFilter.resultsWhere._callDepth || 0;
-	//++DataFilter.resultsWhere._callDepth;
+	DataFilter.resultsWhere._callDepth = DataFilter.resultsWhere._callDepth || 0;
+	++DataFilter.resultsWhere._callDepth;
 	//function indentation()
 	//{return( Array( DataFilter.resultsWhere._callDepth ).join( "\t" ));}
 	//DataFilter.resultsWhere.isDebug = DataFilter.resultsWhere.isDebug || false;
@@ -346,7 +346,7 @@ DataFilter.resultsWhere = function( each, n, every )
 								}
 							}
 							// 'each' just needs to be any kind of object.
-							else if( /*this[ sub_key ] !== null &&*/ is_plain_object( this[ sub_key ]) /*&& is_plain_object( each[ sub_key ])*/)
+							else if( this[ sub_key ] !== null && is_plain_object( this[ sub_key ]) /*&& is_plain_object( each[ sub_key ])*/)
 							{
 								var sub_sub_clause_keys = Object.keys( this[ sub_key ]).filter( not_op_key );
 								if( !!each[ sub_key ] && sub_sub_clause_keys.length > 0 )
@@ -409,7 +409,7 @@ DataFilter.resultsWhere = function( each, n, every )
 			}
 		}
 		else
-		{throw( new TypeError( "Clauses must be arrays or (anonymous and non-null) objects (or booleans, numbers, or strings)." ));}
+		{throw( new TypeError( "Clauses must be arrays, (anonymous and non-null) objects, booleans, numbers, or strings." ));}
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
 	}// if( this instanceof window.constructor )
 	else
@@ -417,7 +417,9 @@ DataFilter.resultsWhere = function( each, n, every )
 		//if( DataFilter.resultsWhere.isDebug )
 		//{window.console.debug( indentation(), n, "Whatever", 'window', "says", JSON.stringify( each ), "is", keeping );}
 	}
-	//--DataFilter.resultsWhere._callDepth;
+	--DataFilter.resultsWhere._callDepth;
+	if( DataFilter.resultsWhere._callDepth == 0 )
+	{var point_break;}
 	return( keeping );
 };
 //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=//
