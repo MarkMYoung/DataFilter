@@ -76,7 +76,7 @@ $(document).ready( function()
 	{
 		QUnit.expect( 2 );
 		var original = [{'a':{'b':'3', 'c':"hi"}}, null, {'a':{'c':"bye"}}, {'a':null}];
-		var whereClause = {"count":4, "a":{"c":{"length":2}}};
+		var whereClause = {"op":">=", "count":4, "a":{"c":{"op":"<=", "length":2}}};
 		var filtered = original.filter( DataFilter.resultsWhere, whereClause );
 		qUnit.strictEqual( filtered.length, 1, "Result length checked." );
 		if( filtered.length >= 1 )
